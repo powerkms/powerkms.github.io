@@ -1,157 +1,84 @@
-import { useEffect, useMemo, useState } from "react"
-import {
-  BRIDE_FIRSTNAME,
-  GROOM_FIRSTNAME,
-  HOLIDAYS,
-  WEDDING_DATE,
-  WEDDING_DATE_FORMAT,
-} from "../../const"
+import { useEffect, useState } from "react"
+import { dayjs, EVENT_DATE } from "../../const"
 import { LazyDiv } from "../lazyDiv"
 
-// 해당 월의 첫 번째 날의 요일과 총 일수를 계산합니다.
-const firstDayOfWeek = WEDDING_DATE.startOf("month").day()
-const daysInMonth = WEDDING_DATE.daysInMonth()
+const formatDate = () =>
+  EVENT_DATE?.isValid()
+    ? EVENT_DATE.format(
+        `YYYY년 M월 D일 dddd A h시${EVENT_DATE.minute() ? " m분" : ""}`,
+      )
+    : null
 
-/**
- * 결혼식 날짜를 표시하는 달력과 디데이 카운트다운 컴포넌트입니다.
- *
- * @returns {JSX.Element} 달력 및 카운트다운 섹션
- */
+/** 행사 일시와 행사까지 남은 날짜를 안내합니다. */
 export const Calendar = () => {
-  // 현재 시간과 예식 시간의 차이를 관리합니다.
-  const [tsDiff, setTsDiff] = useState(WEDDING_DATE.diff())
+  const [now, setNow] = useState(() => dayjs())
 
-  /**
-   * 예식일까지 남은 일수를 계산합니다.
-   */
-  const dayDiff = useMemo(() => {
-    const dayOffset = WEDDING_DATE.diff(WEDDING_DATE.startOf("day"))
-    return Math.ceil((tsDiff - dayOffset) / 1000 / 60 / 60 / 24)
-  }, [tsDiff])
-
-  // 매 초마다 시간을 업데이트합니다.
   useEffect(() => {
-    const interval = setInterval(() => {
-      const diff = WEDDING_DATE.diff()
-      setTsDiff(diff)
-    }, 1000)
+    if (!EVENT_DATE?.isValid()) return
+    const timer = window.setInterval(() => setNow(dayjs()), 60_000)
+    return () => window.clearInterval(timer)
+  }, [])
 
-    return () => clearInterval(interval)
-  })
-
-  /**
-   * 남은 시간을 일, 시, 분, 초 단위로 변환합니다.
-   */
-  const diffs = useMemo(() => {
-    const tsDiff_ = Math.abs(tsDiff)
-    const seconds = Math.floor((tsDiff_ % 60000) / 1000)
-    const minutes = Math.floor((tsDiff_ % 3600000) / 60000)
-    const hours = Math.floor((tsDiff_ % 86400000) / 3600000)
-    const days = Math.floor(tsDiff_ / 86400000)
-    const isAfter = tsDiff < 0
-
-    return { days, hours, minutes, seconds, isAfter }
-  }, [tsDiff])
+  const dateText = formatDate()
+  const daysUntil = EVENT_DATE?.isValid()
+    ? Math.ceil(EVENT_DATE.startOf("day").diff(now.startOf("day"), "day", true))
+    : null
+  const calendarDays = EVENT_DATE?.isValid()
+    ? Array.from(
+        {
+          length:
+            Math.ceil(
+              (EVENT_DATE.startOf("month").day() +
+                EVENT_DATE.daysInMonth()) /
+                7,
+            ) * 7,
+        },
+        (_, index) => {
+          const day = index - EVENT_DATE.startOf("month").day() + 1
+          return day > 0 && day <= EVENT_DATE.daysInMonth() ? day : null
+        },
+      )
+    : []
 
   return (
     <LazyDiv className="card calendar">
-      <h2 className="english">The Wedding Day</h2>
+      <h2>행사 일시</h2>
       <div className="break" />
-      {/* 예식 일시 표시 */}
-      {WEDDING_DATE.format(WEDDING_DATE_FORMAT)}
-
-      {/* 달력 영역 */}
-      <div className="calendar-wrapper">
-        <div className="head holiday">
-          <span>Su</span>
-        </div>
-        <div className="head">
-          <span>Mo</span>
-        </div>
-        <div className="head">
-          <span>Tu</span>
-        </div>
-        <div className="head">
-          <span>We</span>
-        </div>
-        <div className="head">
-          <span>Th</span>
-        </div>
-        <div className="head">
-          <span>Fr</span>
-        </div>
-        <div className="head">
-          <span>Sa</span>
-        </div>
-
-        {/* 첫 주 빈 공간 채우기 */}
-        {Array.from({ length: firstDayOfWeek }).map((_, i) => (
-          <div key={i} />
-        ))}
-
-        {/* 날짜 표시 */}
-        {Array.from({ length: daysInMonth }).map((_, i) => {
-          const date = i + 1
-          const classes = []
-          const isSunday = (i + firstDayOfWeek) % 7 === 0
-
-          // 일요일 또는 지정된 휴무일일 경우 'holiday' 클래스 추가
-          if (isSunday || HOLIDAYS.includes(date)) {
-            classes.push("holiday")
-          }
-
-          const isWeddingDate = date === WEDDING_DATE.date()
-
-          // 예식일일 경우 'wedding-date' 클래스 추가
-          if (isWeddingDate) {
-            classes.push("wedding-date")
-          }
-
-          return (
-            <div
-              key={i}
-              className={classes.length ? classes.join(" ") : undefined}
-            >
-              <span>{date}</span>
-              {isWeddingDate && <div className="heart" />}
+      {dateText ? (
+        <>
+          <div className="event-date">{dateText}</div>
+          <div className="month-calendar" aria-label={EVENT_DATE.format("YYYY년 M월 달력")}>
+            <div className="calendar-month">{EVENT_DATE.format("YYYY년 M월")}</div>
+            <div className="calendar-grid calendar-weekdays" aria-hidden="true">
+              {["일", "월", "화", "수", "목", "금", "토"].map((weekday) => (
+                <span key={weekday}>{weekday}</span>
+              ))}
             </div>
-          )
-        })}
-      </div>
-
-      {/* 카운트다운 영역 */}
-      <div className="countdown-wrapper">
-        <div className="countdown">
-          <div className="unit">DAY</div>
-          <div />
-          <div className="unit">HOUR</div>
-          <div />
-          <div className="unit">MIN</div>
-          <div />
-          <div className="unit">SEC</div>
-          <div className="count">{diffs.days}</div>
-          <span>:</span>
-          <div className="count">{diffs.hours}</div>
-          <span>:</span>
-          <div className="count">{diffs.minutes}</div>
-          <span>:</span>
-          <div className="count">{diffs.seconds}</div>
-        </div>
-        <div className="message">
-          {GROOM_FIRSTNAME} & {BRIDE_FIRSTNAME}의 결혼식이{" "}
-          {dayDiff > 0 ? (
-            <>
-              <span className="d-day">{dayDiff}</span>일 남았습니다.
-            </>
-          ) : dayDiff === 0 ? (
-            <>오늘입니다.</>
-          ) : (
-            <>
-              <span className="d-day">{-dayDiff}</span>일 지났습니다.
-            </>
+            <div className="calendar-grid calendar-dates">
+              {calendarDays.map((day, index) => (
+                <span
+                  key={`${day ?? "empty"}-${index}`}
+                  className={day === EVENT_DATE.date() ? "event-day" : undefined}
+                  aria-current={day === EVENT_DATE.date() ? "date" : undefined}
+                >
+                  {day}
+                </span>
+              ))}
+            </div>
+          </div>
+          {daysUntil !== null && (
+            <div className="event-countdown">
+              {daysUntil > 0
+                ? `기념식까지 ${daysUntil}일 남았습니다.`
+                : daysUntil === 0
+                  ? "오늘 기념식이 열립니다."
+                  : `기념식이 ${Math.abs(daysUntil)}일 지났습니다.`}
+            </div>
           )}
-        </div>
-      </div>
+        </>
+      ) : (
+        <div className="event-date">행사 일시를 준비 중입니다</div>
+      )}
     </LazyDiv>
   )
 }

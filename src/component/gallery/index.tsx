@@ -10,7 +10,7 @@ import { GALLERY_IMAGES } from "../../images"
  */
 const CAROUSEL_ITEMS = GALLERY_IMAGES.map((item, idx) => (
   <div className="carousel-item" key={idx}>
-    <img src={item} draggable={false} alt={`${idx}`} />
+    <img src={item} draggable={false} alt={`기념 사진 ${idx + 1}`} />
   </div>
 ))
 
@@ -312,7 +312,7 @@ export const Gallery = () => {
   return (
     <>
       <LazyDiv className="card gallery">
-        <h2 className="english">Gallery</h2>
+        <h2>교수님의 발자취</h2>
         <div className="carousel-wrapper">
           <div
             className="carousel"
@@ -415,7 +415,7 @@ export const Gallery = () => {
               <img
                 key={idx}
                 src={image}
-                alt={`${idx}`}
+                alt={`기념 사진 ${idx + 1}`}
                 draggable={false}
                 onClick={() => {
                   if (statusRef.current === "stationary") {

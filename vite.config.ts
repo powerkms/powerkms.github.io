@@ -6,12 +6,26 @@ import fs from "fs"
 import pkg from "./package.json"
 import { createHtmlPlugin } from "vite-plugin-html"
 import {
-  GROOM_FULLNAME,
-  BRIDE_FULLNAME,
-  WEDDING_DATE,
+  EVENT_DATE,
+  EVENT_TITLE,
   LOCATION,
-  WEDDING_DATE_FORMAT,
+  PROFESSOR_NAME,
 } from "./src/const"
+
+const PAGE_TITLE = [
+  PROFESSOR_NAME && `${PROFESSOR_NAME} 교수님`,
+  EVENT_TITLE,
+]
+  .filter(Boolean)
+  .join(" | ")
+const DESCRIPTION = [
+  EVENT_DATE?.isValid()
+    ? EVENT_DATE.format("YYYY년 M월 D일 dddd A h시")
+    : "",
+  LOCATION,
+]
+  .filter(Boolean)
+  .join(" · ") || "감사와 존경을 나누는 퇴임 기념식에 초대합니다."
 
 const distFolder = "build"
 
@@ -32,9 +46,8 @@ export default defineConfig({
     createHtmlPlugin({
       inject: {
         data: {
-          GROOM_FULLNAME,
-          BRIDE_FULLNAME,
-          DESCRIPTION: `${WEDDING_DATE.format(WEDDING_DATE_FORMAT)} ${LOCATION}`,
+          PAGE_TITLE,
+          DESCRIPTION,
         },
       },
     }),
@@ -42,9 +55,7 @@ export default defineConfig({
       name: "manifest-inject",
       writeBundle() {
         const content = fs.readFileSync("public/manifest.json", "utf-8")
-        const processed = content
-          .replace(/<%= GROOM_FULLNAME %>/g, GROOM_FULLNAME)
-          .replace(/<%= BRIDE_FULLNAME %>/g, BRIDE_FULLNAME)
+        const processed = content.replace(/<%= PAGE_TITLE %>/g, PAGE_TITLE)
         fs.writeFileSync(`${distFolder}/manifest.json`, processed)
       },
     },

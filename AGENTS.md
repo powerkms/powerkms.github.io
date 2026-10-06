@@ -1,10 +1,10 @@
-# Gemini Project Context: Wedding Invitation Template
+# Gemini Project Context: Retirement Ceremony Invitation
 
-This document provides essential context and instructions for AI agents working on the Wedding Invitation Template project.
+This document provides essential context and instructions for AI agents working on the Retirement Ceremony Invitation project.
 
 ## Project Overview
 
-A modern, responsive mobile wedding invitation template built with **React 19**, **Vite 7**, **TypeScript**, and **SASS**. It features a clean UI with scroll-triggered animations and integrations with Naver Maps and Kakao SDK.
+A formal, responsive retirement ceremony invitation built with **React 19**, **Vite 7**, **TypeScript**, and **SASS**. It supports event details, an optional photo gallery, venue search links, and Kakao sharing.
 
 ### Core Technologies
 - **Frontend Framework:** React 19
@@ -12,7 +12,7 @@ A modern, responsive mobile wedding invitation template built with **React 19**,
 - **Styling:** SASS (SCSS) with CSS Variables
 - **Date Management:** Day.js
 - **Icons:** SVG (via `vite-plugin-svgr`)
-- **Maps:** Naver Maps API
+- **Maps:** Naver Map and Kakao Map search links
 - **Social Sharing:** Kakao SDK
 
 ---
@@ -21,11 +21,12 @@ A modern, responsive mobile wedding invitation template built with **React 19**,
 
 The project follows a component-based architecture where sections of the invitation are modularized.
 
-- `src/const.ts`: **Primary configuration file**. Contains all wedding-specific data (names, dates, location, accounts).
+- `src/const.ts`: **Primary configuration file**. Contains professor, ceremony, schedule, and venue details.
+- `src/images/index.ts`: Registers the optional cover and gallery photos.
 - `src/App.tsx`: Main orchestrator of the sections.
 - `src/component/`: Contains all UI components. Each component typically has its own `.tsx` and `.scss` file.
   - `modal/`: Custom modal management system with focus trap.
-  - `store/`: Simple state management for external SDKs (Naver, Kakao).
+  - `store/`: Simple state management for the Kakao SDK.
   - `lazyDiv/`: A wrapper component that adds fade-in animations when scrolled into view.
 - `vite.config.ts`: Configured to inject constants from `src/const.ts` directly into `index.html` and `manifest.json`.
 
@@ -40,18 +41,14 @@ The project follows a component-based architecture where sections of the invitat
 - `npm run preview`: Previews the production build locally.
 
 ### Environment Variables
-The project uses the following environment variables (defined in `.env`):
-- `VITE_NAVER_MAP_CLIENT_ID`: Client ID for Naver Maps.
-- `VITE_KAKAO_SDK_JS_KEY`: JavaScript key for Kakao SDK.
-- `VITE_SERVER_URL`: URL for the guestbook/attendance backend.
-- `VITE_STATIC_ONLY`: Set to `true` to disable backend-dependent features (Guestbook, Attendance).
+The only optional environment variable is `VITE_KAKAO_SDK_JS_KEY`, used for Kakao sharing. Venue search links work without API keys.
 
 ---
 
 ## Coding Conventions & Guidelines
 
 ### 1. Configuration First
-Always check `src/const.ts` before hardcoding any wedding-related information. New configuration items should be added here to maintain a single source of truth.
+Always check `src/const.ts` before hardcoding ceremony-related information. New event configuration should be added there to maintain a single source of truth.
 
 ### 2. Documentation
 - **Korean Friendly:** The codebase is fully documented with Korean comments (JSDoc style). This is intended to help Korean users easily understand and customize the template. When adding new features, please maintain this standard.
@@ -72,5 +69,5 @@ Always check `src/const.ts` before hardcoding any wedding-related information. N
 
 ## Testing & Validation
 - Ensure all changes are tested on both desktop and mobile viewports.
-- Verify that social sharing (Kakao) and maps (Naver) work correctly with the provided environment variables.
+- Verify that the venue search links use the configured search query and Kakao sharing uses the current event details.
 - If modifying the build process, ensure `manifest-inject` and HTML injection in `vite.config.ts` still function as expected.

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#f3efe6"/>
+  <rect x="48" y="48" width="1104" height="534" rx="8" fill="none" stroke="#9a835e" stroke-width="2"/>
+  <circle cx="600" cy="205" r="74" fill="none" stroke="#9a835e" stroke-width="2"/>
+  <path d="M600 153v104M548 205h104" stroke="#9a835e" stroke-width="2"/>
+  <text x="600" y="365" text-anchor="middle" fill="#8a7046" font-family="serif" font-size="54">퇴임 기념식에 초대합니다</text>
+  <text x="600" y="430" text-anchor="middle" fill="#6d6558" font-family="serif" font-size="28">감사와 존경의 마음을 나누는 자리</text>
+</svg>

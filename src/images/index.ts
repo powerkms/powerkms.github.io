@@ -1,36 +1,9 @@
-import coverImage from "./cover.png"
-import image1 from "./image1.png"
-import image2 from "./image2.png"
-import image3 from "./image3.png"
-import image4 from "./image4.png"
-import image5 from "./image5.png"
-import image6 from "./image6.png"
-import image7 from "./image7.png"
-import image8 from "./image8.png"
-import image9 from "./image9.png"
-import image10 from "./image10.png"
-import image11 from "./image11.png"
-import image12 from "./image12.png"
-
 /**
- * 메인 커버 이미지
+ * 교수님 사진을 준비한 뒤 아래처럼 이미지 파일을 가져오세요.
+ * 예: import portrait from "./professor-portrait.webp"
+ * 표지에는 별도 파일을, 갤러리에는 사진 목록을 연결합니다.
  */
-export const COVER_IMAGE = coverImage
+export const GALLERY_IMAGES: string[] = []
 
-/**
- * 갤러리에 표시될 이미지 목록
- */
-export const GALLERY_IMAGES = [
-  image1,
-  image2,
-  image3,
-  image4,
-  image5,
-  image6,
-  image7,
-  image8,
-  image9,
-  image10,
-  image11,
-  image12,
-]
+/** 표지 사진을 사용하려면 import한 이미지 경로를 지정하세요. */
+export const COVER_IMAGE: string | null = null

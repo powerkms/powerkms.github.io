@@ -1,58 +1,41 @@
 import {
-  BRIDE_FULLNAME,
-  GROOM_FULLNAME,
+  DEPARTMENT,
+  EVENT_DATE,
   LOCATION,
-  WEDDING_DATE,
-  WEDDING_DATE_FORMAT,
 } from "../../const"
+import snuLogo from "../../images/snu-logo.svg"
 import { COVER_IMAGE } from "../../images"
 import { LazyDiv } from "../lazyDiv"
 
-const DAY_OF_WEEK = [
-  "Sunday",
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-]
-
-/**
- * 초대장의 메인 커버 섹션입니다.
- * 예식 일시, 신랑/신부 이름, 장소를 표시합니다.
- *
- * @returns {JSX.Element} 커버 섹션
- */
-export const Cover = () => {
-  return (
-    <LazyDiv className="card cover">
-      {/* 상단 날짜 표시 */}
-      <div className="wedding-date">
-        {WEDDING_DATE.format("YYYY")}
-        <div className="divider" />
-        {WEDDING_DATE.format("MM")}
-        <div className="divider" />
-        {WEDDING_DATE.format("DD")}
-      </div>
-      {/* 요일 표시 (영어) */}
-      <div className="wedding-day-of-week">
-        {DAY_OF_WEEK[WEDDING_DATE.day()]}
-      </div>
-      {/* 커버 이미지 */}
+/** 은퇴 기념식의 핵심 정보를 보여주는 표지입니다. */
+export const Cover = () => (
+  <LazyDiv className="card cover">
+    <img
+      className="snu-logo"
+      src={snuLogo}
+      alt="서울대학교"
+    />
+    {COVER_IMAGE && (
       <div className="image-wrapper">
-        <img src={COVER_IMAGE} alt="sample" />
+        <img src={COVER_IMAGE} alt="교수님 사진" />
       </div>
-      <div className="subtitle">Save the date for the wedding of</div>
-      {/* 이름 표시 */}
-      <div className="names">
-        {GROOM_FULLNAME}
-        <div className="divider" />
-        {BRIDE_FULLNAME}
+    )}
+    <div className="subtitle">A Celebration of a Distinguished Career</div>
+    <h1 className="event-title">
+      <span className="professor-name">문일경 교수님</span>
+      <span>정년 퇴임식에 초대합니다.</span>
+    </h1>
+    {DEPARTMENT && <div className="info">{DEPARTMENT}</div>}
+    <div className="break" />
+    {EVENT_DATE?.isValid() ? (
+      <div className="info">
+        {EVENT_DATE.format(
+          `YYYY년 M월 D일 dddd A h시${EVENT_DATE.minute() ? " m분" : ""}`,
+        )}
       </div>
-      {/* 예식 정보 (포맷팅된 날짜 및 장소) */}
-      <div className="info">{WEDDING_DATE.format(WEDDING_DATE_FORMAT)}</div>
-      <div className="info">{LOCATION}</div>
-    </LazyDiv>
-  )
-}
+    ) : (
+      <div className="info">행사 일시를 준비 중입니다</div>
+    )}
+    <div className="info">{LOCATION || "행사 장소를 확인 중입니다"}</div>
+  </LazyDiv>
+)
