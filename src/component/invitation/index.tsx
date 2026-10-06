@@ -13,7 +13,10 @@ export const Invitation = () => (
      문일경 교수님의 퇴임을 맞아,
     </div>
     <div className="content">
-      감사와 존경의 마음을 나누는 자리를 마련했습니다.
+      감사와 존경의 마음을 나누는 자리를  
+    </div>
+    <div className="content">
+       마련했습니다.
     </div>
     <div className="content">
       함께해 주시어 뜻깊은 순간을 
